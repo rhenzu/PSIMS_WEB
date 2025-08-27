@@ -20,7 +20,7 @@
     "nodemailer": "^6.10.1"
   },
   "engines": {
-    "node": "16.14.2"
+    "node": "18.x"
   },
   "repository": {
     "url": "https://glitch.com/edit/#!/glitch-hello-node"
