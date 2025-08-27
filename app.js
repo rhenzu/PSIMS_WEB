@@ -9,9 +9,10 @@ const crypto = require('crypto'); // <-- Add crypto
 const nodemailer = require('nodemailer');
 const ActivityProgram = require('./models/ActivityProgram');
 const ejs = require('ejs');
+const path = require('path');
 
 const app = express();
-
+app.set('views', path.join(__dirname, 'views'));
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
