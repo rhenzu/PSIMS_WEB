@@ -1,0 +1,209 @@
+/* General container styling */
+.activity-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 0;
+    justify-content: center; /* Center the cards */
+}
+
+/* Individual activity card */
+.activity-card {
+    width: 350px; /* Fixed width to fit 3 cards in a 1200px viewport (350px * 3 + 20px gaps * 2 = 1090px) */
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Hover effect for cards */
+.activity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Color variations for cards using data-color-index */
+.activity-card[data-color-index="0"]::before {
+    background: linear-gradient(135deg, #f0f9ff 0%, #c3e8ff 100%);
+}
+.activity-card[data-color-index="1"]::before {
+    background: linear-gradient(135deg, #fef3f2 0%, #ffd9d7 100%);
+}
+.activity-card[data-color-index="2"]::before {
+    background: linear-gradient(135deg, #f0fff4 0%, #c7f7d4 100%);
+}
+.activity-card[data-color-index="3"]::before {
+    background: linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 100%);
+}
+
+/* Pseudo-element for background color */
+.activity-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.5;
+}
+
+/* Ensure content is above the background */
+.activity-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Image styling */
+.activity-card-image-wrapper {
+    width: 100%;
+    height: 200px; /* Fixed height for consistency */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb; /* Light background for the image area */
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.activity-card-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Display the full image without cropping */
+}
+
+/* Placeholder for when no image is available */
+.activity-card-image-placeholder {
+    width: 100%;
+    height: 200px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* Content section styling */
+.activity-card-content {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.activity-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a2038;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.activity-card-description {
+    font-size: 13px;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-card-dates {
+    margin-top: auto; /* Push dates to the bottom of the card */
+}
+
+.activity-card-date {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.date-label {
+    font-weight: 500;
+    color: #374151;
+}
+
+/* No activities message */
+.no-activities-message {
+    font-size: 16px;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 30px;
+    font-style: italic;
+}
+
+/* Page title and description */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2038;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.page-description {
+    font-size: 16px;
+    color: #4b5563;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .activity-card {
+        width: 300px; /* Slightly smaller for medium screens */
+    }
+
+    .activity-card-image-wrapper,
+    .activity-card-image-placeholder {
+        height: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .activity-card {
+        width: 280px; /* Smaller for tablets */
+    }
+
+    .activity-card-image-wrapper,
+    .activity-card-image-placeholder {
+        height: 160px;
+    }
+
+    .activity-card-title {
+        font-size: 16px;
+    }
+
+    .activity-card-description {
+        font-size: 12px;
+    }
+
+    .activity-card-date {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .activity-card {
+        width: 100%; /* Full width on small screens */
+        max-width: 350px;
+    }
+
+    .activity-card-image-wrapper,
+    .activity-card-image-placeholder {
+        height: 150px;
+    }
+}

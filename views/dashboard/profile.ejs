@@ -1,0 +1,33 @@
+<h1>Welcome, <%= scholar.FirstName %> <%= scholar.LastName %></h1>
+<div class="card">
+    <h2>Profile</h2>
+    <p><strong>Username:</strong> <%= scholar.Username %></p>
+    <p><strong>Full Name:</strong> <%= scholar.FirstName %> <%= scholar.MiddleName ? scholar.MiddleName + ' ' : '' %><%= scholar.LastName %></p>
+    <p><strong>Sex:</strong> <%= scholar.Sex %></p>
+    <p><strong>Birth Date:</strong> <%= scholar.BirthDate.toISOString().split('T')[0] %></p>
+    <p><strong>Address:</strong> <%= scholar.Address %></p>
+    <p><strong>Contact Number:</strong> <%= scholar.ContactNumber %></p>
+    <p><strong>Email:</strong> <%= scholar.Email %></p>
+</div>
+
+<div class="card">
+    <h2>Academic Information</h2>
+    <p><strong>School Type:</strong> <%= scholar.SchoolType %></p>
+    <p><strong>School Level:</strong> <%= scholar.SchoolLevel %></p>
+    <p><strong>School Name:</strong> <%= scholar.SchoolName %></p>
+    <p><strong>Year Level:</strong> <%= scholar.YearLevel %></p>
+    <p><strong>Average Grade:</strong> <%= scholar.AverageGrade %></p>
+    <p><strong>Enrollment Date:</strong> <%= scholar.EnrollmentDate.toISOString().split('T')[0] %></p>
+</div>
+
+<div class="card">
+    <h2>Scholarship Status</h2>
+    <p><strong>Status:</strong> <%= scholar.GraduationStatus %></p>
+    <% if (scholar.GraduationDate) { %>
+        <p><strong>Graduation Date:</strong> <%= scholar.GraduationDate.toISOString().split('T')[0] %></p>
+    <% } %>
+    <p><strong>Renewal Status:</strong> <%= scholar.RenewalStatus %></p>
+    <% if (scholar.RenewalDate) { %>
+        <p><strong>Renewal Date:</strong> <%= scholar.RenewalDate.toISOString().split('T')[0] %></p>
+    <% } %>
+</div>

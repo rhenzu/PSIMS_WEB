@@ -1,0 +1,71 @@
+<h1>Payroll Information</h1>
+<div class="card">
+    <p><strong>Payroll Request Status:</strong> <%= scholar.PayrollRequestStatus || 'Not Requested' %></p>
+    <% if (scholar.PayrollRequestStatus === 'Approved') { %>
+        <p><strong>Current Payroll Number:</strong> <%= scholar.PayrollNumber || 'Not Assigned' %></p>
+    <% } else { %>
+        <p><strong>Current Payroll Number:</strong> Request a payroll to view your current payroll number.</p>
+    <% } %>
+
+    <!-- Always show payroll history, regardless of request status -->
+    <% if (scholar.PayrollHistory && scholar.PayrollHistory.length > 0) { %>
+        <h3>Payroll History</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>School Year</th>
+                    <th>Payroll Number</th>
+                    <th>Issued Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% scholar.PayrollHistory.forEach(record => { %>
+                    <tr>
+                        <td><%= record.SchoolYear %></td>
+                        <td><%= record.PayrollNumber %></td>
+                        <td><%= record.IssuedDate.toISOString().split('T')[0] %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No payroll history available.</p>
+    <% } %>
+    <button onclick="requestPayroll()" class="btn">Request Payroll</button>
+</div>
+
+<!-- Popup for Payroll Request Messages -->
+<div class="popup-overlay" id="popupOverlay"></div>
+<div class="popup" id="popup">
+    <p id="popupMessage"></p>
+    <button onclick="closePopup()">OK</button>
+</div>
+
+<script>
+    async function requestPayroll() {
+        try {
+            const response = await fetch('/dashboard/request-payroll', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+            showPopup(result.message);
+            if (result.success) {
+                setTimeout(() => location.reload(), 1500);
+            }
+        } catch (err) {
+            showPopup('An error occurred. Please try again.');
+        }
+    }
+
+    function showPopup(message) {
+        document.getElementById('popupMessage').textContent = message;
+        document.getElementById('popup').style.display = 'block';
+        document.getElementById('popupOverlay').style.display = 'block';
+    }
+
+    function closePopup() {
+        document.getElementById('popup').style.display = 'none';
+        document.getElementById('popupOverlay').style.display = 'none';
+    }
+</script>

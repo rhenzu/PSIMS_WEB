@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Dashboard - <%= pageTitle %></title>
+    <link rel="stylesheet" href="/<%= pageCss %>">
+    <style>
+        /* Shared Sidebar Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 30px 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #3498db;
+        }
+
+        .sidebar a.active {
+            background-color: #3498db;
+        }
+
+        .sidebar a.logout {
+            background-color: #e74c3c;
+            margin-top: 20px;
+        }
+
+        .sidebar a.logout:hover {
+            background-color: #c0392b;
+        }
+
+        .dashboard-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Scholar Dashboard</h2>
+        <a href="/dashboard/profile" class="<%= page === 'profile' ? 'active' : '' %>">Profile</a>
+        <a href="/dashboard/payroll" class="<%= page === 'payroll' ? 'active' : '' %>">Request Payroll</a>
+        <a href="/dashboard/settings" class="<%= page === 'settings' ? 'active' : '' %>">Settings</a>
+      <a href="/dashboard/activities" class="<%= page === 'actvities' ? 'active' : '' %>">Activities</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+        <%- bodyContent %>
+    </div>
+</body>
+</html>

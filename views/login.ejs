@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Login</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="form-box">
+        <h1>Scholar Dashboard</h1>
+        <h2>Login</h2>
+        <% if (typeof error !== 'undefined' && error) { %> <p class="error"><%= error %></p>
+        <% } %>
+        <% if (typeof message !== 'undefined' && message) { %> <p class="success"><%= message %></p> <% } %>
+        <form action="/login" method="POST">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+        <div class="form-links">
+             <p>First time here? <a href="/initialize">Initialize your account</a></p>
+             <p><a href="/forgot-password">Forgot Password?</a></p> </div>
+    </div>
+    <style>
+        .success { color: green; background-color: #e6ffed; border: 1px solid #34d399; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .form-links { margin-top: 15px; text-align: center; font-size: 0.9em; }
+        .form-links p { margin-bottom: 5px; }
+    </style>
+</body>
+</html>

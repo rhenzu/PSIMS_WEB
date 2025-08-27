@@ -1,0 +1,41 @@
+<h1 class="page-title">Activities & Programs</h1>
+<p class="page-description">Check out the latest activities and programs available.</p>
+
+<div class="activity-cards-container">
+    <% if (programs && programs.length > 0) { %>
+        <% programs.forEach((program, index) => { %>
+            <div class="activity-card" data-color-index="<%= index % 4 %>">
+                <!-- Image Section -->
+                <% if (program.imageBase64 && program.imageMimeType) { %>
+                    <div class="activity-card-image-wrapper">
+                        <img src="data:<%= program.imageMimeType %>;base64,<%= program.imageBase64 %>" 
+                             alt="<%= program.title %>" 
+                             class="activity-card-image">
+                    </div>
+                <% } else { %>
+                    <div class="activity-card-image-placeholder">
+                        <span>No Image Available</span>
+                    </div>
+                <% } %>
+
+                <!-- Content Section -->
+                <div class="activity-card-content">
+                    <h3 class="activity-card-title"><%= program.title %></h3>
+                    
+                    <% if (program.description) { %>
+                        <p class="activity-card-description"><%= program.description %></p>
+                    <% } %>
+
+                    <div class="activity-card-dates">
+                        <p class="activity-card-date">
+                            <span class="date-label">Posted:</span> 
+                            <%= new Date(program.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p class="no-activities-message">No activity programs available at this time.</p>
+    <% } %>
+</div>

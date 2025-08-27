@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* Popup Styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .popup button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .popup button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Scholar Dashboard</h2>
+        <a href="#profile" class="active">Profile</a>
+        <a href="#payroll">Payroll</a>
+        <a href="#settings">Settings</a>
+        <a href="#notifications">Notifications</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+        <h1>Welcome, <%= scholar.FirstName %> <%= scholar.LastName %></h1>
+
+        <!-- Profile Section -->
+        <div id="profile" class="card">
+            <h2>Profile</h2>
+            <p><strong>Username:</strong> <%= scholar.Username %></p>
+            <p><strong>Full Name:</strong> <%= scholar.FirstName %> <%= scholar.MiddleName ? scholar.MiddleName + ' ' : '' %><%= scholar.LastName %></p>
+            <p><strong>Sex:</strong> <%= scholar.Sex %></p>
+            <p><strong>Birth Date:</strong> <%= scholar.BirthDate.toISOString().split('T')[0] %></p>
+            <p><strong>Address:</strong> <%= scholar.Address %></p>
+            <p><strong>Contact Number:</strong> <%= scholar.ContactNumber %></p>
+            <p><strong>Email:</strong> <%= scholar.Email %></p>
+        </div>
+
+        <!-- Academic Information Section -->
+        <div id="academic" class="card">
+            <h2>Academic Information</h2>
+            <p><strong>School Type:</strong> <%= scholar.SchoolType %></p>
+            <p><strong>School Level:</strong> <%= scholar.SchoolLevel %></p>
+            <p><strong>School Name:</strong> <%= scholar.SchoolName %></p>
+            <p><strong>Year Level:</strong> <%= scholar.YearLevel %></p>
+            <p><strong>Average Grade:</strong> <%= scholar.AverageGrade %></p>
+            <p><strong>Enrollment Date:</strong> <%= scholar.EnrollmentDate.toISOString().split('T')[0] %></p>
+        </div>
+
+        <!-- Scholarship Status Section -->
+        <div id="scholarship" class="card">
+            <h2>Scholarship Status</h2>
+            <p><strong>Graduation Status:</strong> <%= scholar.GraduationStatus %></p>
+            <% if (scholar.GraduationDate) { %>
+                <p><strong>Graduation Date:</strong> <%= scholar.GraduationDate.toISOString().split('T')[0] %></p>
+            <% } %>
+            <p><strong>Renewal Status:</strong> <%= scholar.RenewalStatus %></p>
+            <% if (scholar.RenewalDate) { %>
+                <p><strong>Renewal Date:</strong> <%= scholar.RenewalDate.toISOString().split('T')[0] %></p>
+            <% } %>
+        </div>
+
+        <!-- Payroll Section -->
+        <div id="payroll" class="card">
+            <h2>Payroll Information</h2>
+            <p><strong>Payroll Request Status:</strong> <%= scholar.PayrollRequestStatus || 'Not Requested' %></p>
+            <p><strong>Current Payroll Number:</strong> <%= scholar.PayrollNumber || 'Not Assigned' %></p>
+            <% if (scholar.PayrollHistory && scholar.PayrollHistory.length > 0) { %>
+                <h3>Payroll History</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>School Year</th>
+                            <th>Payroll Number</th>
+                            <th>Issued Date</th>
+                            <th>Distributed Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% scholar.PayrollHistory.forEach(record => { %>
+                            <tr>
+                                <td><%= record.SchoolYear %></td>
+                                <td><%= record.PayrollNumber %></td>
+                                <td><%= record.IssuedDate.toISOString().split('T')[0] %></td>
+                                <td><%= record.DistributedDate ? record.DistributedDate.toISOString().split('T')[0] : 'Not Distributed' %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No payroll history available.</p>
+            <% } %>
+            <button onclick="requestPayroll()" class="btn" style="margin-top: 15px;">Request Payroll</button>
+        </div>
+
+        <!-- Settings Section (Placeholder) -->
+        <div id="settings" class="card">
+            <h2>Settings</h2>
+            <p>Update your profile information, change your password, or manage your preferences here.</p>
+        </div>
+
+        <!-- Notifications Section (Placeholder) -->
+        <div id="notifications" class="card">
+            <h2>Notifications</h2>
+            <p>No new notifications at this time.</p>
+        </div>
+    </div>
+
+    <!-- Popup for Payroll Request Messages -->
+    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="popup" id="popup">
+        <p id="popupMessage"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Smooth Scroll for Sidebar
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                    document.querySelectorAll('.sidebar a').forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Payroll Request Function
+        async function requestPayroll() {
+            try {
+                const response = await fetch('/request-payroll', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                showPopup(result.message);
+                if (result.success) {
+                    setTimeout(() => location.reload(), 1500); // Refresh to show updated status
+                }
+            } catch (err) {
+                showPopup('An error occurred. Please try again.');
+            }
+        }
+
+        // Popup Functions
+        function showPopup(message) {
+            document.getElementById('popupMessage').textContent = message;
+            document.getElementById('popup').style.display = 'block';
+            document.getElementById('popupOverlay').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
