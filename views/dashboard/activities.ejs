@@ -1,5 +1,38 @@
 <h1 class="page-title">Activities & Programs</h1>
-<p class="page-description">Check out the latest activities and programs available.</p>
+<p class="page-description">Check out the latest activities and programs available. You can also add your own below!</p>
+
+<!-- Add New Activity Form -->
+<div class="add-activity-form">
+    <h3>Add Your Own Activity</h3>
+    <form method="POST" action="/dashboard/activities" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" required placeholder="Enter activity title">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3" placeholder="Enter description (optional)"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="startDate">Start Date *</label>
+            <input type="date" id="startDate" name="startDate" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="endDate">End Date *</label>
+            <input type="date" id="endDate" name="endDate" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="image">Upload Image (optional)</label>
+            <input type="file" id="image" name="image" accept="image/*">
+        </div>
+        
+        <button type="submit" class="add-activity-btn">Add Activity</button>
+    </form>
+</div>
 
 <div class="activity-cards-container">
     <% if (programs && programs.length > 0) { %>
@@ -31,6 +64,13 @@
                             <span class="date-label">Posted:</span> 
                             <%= new Date(program.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
                         </p>
+                        <% if (program.startDate && program.endDate) { %>
+                            <p class="activity-card-date">
+                                <span class="date-label">Dates:</span> 
+                                <%= new Date(program.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> - 
+                                <%= new Date(program.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                            </p>
+                        <% } %>
                     </div>
                 </div>
             </div>
