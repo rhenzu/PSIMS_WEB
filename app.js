@@ -41,7 +41,7 @@ const upload = multer({
 });
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -54,7 +54,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // --- Email Transport Setup ---
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: parseInt(process.env.EMAIL_PORT || "587"), // Default to 587
     secure: process.env.EMAIL_SECURE === 'true', // Convert string 'true' to boolean
