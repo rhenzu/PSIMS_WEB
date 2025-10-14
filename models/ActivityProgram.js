@@ -9,10 +9,10 @@ const activityProgramSchema = new mongoose.Schema({
         type: String
     },
     imageBase64: {
-        type: String
+        type: String // Optional: Base64 encoded image data
     },
     imageMimeType: {
-        type: String // Store the MIME type (e.g., "image/jpeg", "image/png")
+        type: String // Optional: MIME type (e.g., "image/jpeg")
     },
     startDate: {
         type: Date,
