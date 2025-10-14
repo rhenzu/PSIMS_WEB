@@ -5,11 +5,12 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const Scholar = require('./models/Scholar');
-const crypto = require('crypto'); // <-- Add crypto
+const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const ActivityProgram = require('./models/ActivityProgram');
 const ejs = require('ejs');
 const path = require('path');
+const multer = require('multer'); // Added for file uploads
 
 const app = express();
 app.set('views', path.join(__dirname, 'views'));
@@ -23,6 +24,21 @@ app.use(session({
     saveUninitialized: false,
     cookie: { secure: false }
 }));
+
+// Multer configuration for file uploads (memory storage for base64 conversion)
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed!'), false);
+        }
+    }
+});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -38,7 +54,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // --- Email Transport Setup ---
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
     host: process.env.EMAIL_HOST,
     port: parseInt(process.env.EMAIL_PORT || "587"), // Default to 587
     secure: process.env.EMAIL_SECURE === 'true', // Convert string 'true' to boolean
@@ -129,7 +145,7 @@ app.get('/login', (req, res) => {
     res.render('login', { error: null });
 });
 
-// Add the new route for Activities
+// Activities Page (GET and POST)
 app.get('/dashboard/activities', isAuthenticated, async (req, res) => {
     try {
         // Fetch the scholar data (needed for layout)
@@ -158,6 +174,48 @@ app.get('/dashboard/activities', isAuthenticated, async (req, res) => {
     } catch (err) {
         console.error('Error fetching activities:', err);
         res.redirect('/dashboard/profile');
+    }
+});
+
+app.post('/dashboard/activities', isAuthenticated, upload.single('image'), async (req, res) => {
+    try {
+        const { title, description, startDate, endDate } = req.body;
+        const scholar = await Scholar.findById(req.session.scholarId);
+        if (!scholar) {
+            return res.redirect('/login');
+        }
+
+        // Validate required fields
+        if (!title || !startDate || !endDate) {
+            return res.redirect('/dashboard/activities'); // Could add flash message for error
+        }
+
+        // Prepare image data if uploaded
+        let imageBase64 = null;
+        let imageMimeType = null;
+        if (req.file) {
+            imageBase64 = req.file.buffer.toString('base64');
+            imageMimeType = req.file.mimetype;
+        }
+
+        // Create new activity program
+        const newProgram = new ActivityProgram({
+            title: title.trim(),
+            description: description ? description.trim() : '',
+            imageBase64,
+            imageMimeType,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate)
+        });
+
+        await newProgram.save();
+
+        // Redirect back to activities page
+        res.redirect('/dashboard/activities');
+    } catch (err) {
+        console.error('Error creating activity program:', err);
+        // For now, redirect back (could pass error via session flash in production)
+        res.redirect('/dashboard/activities');
     }
 });
 
@@ -397,10 +455,6 @@ app.get('/logout', (req, res) => {
         res.redirect('/login');
     });
 });
-
-
-
-
 
 
 // GET route for the forgot password form
