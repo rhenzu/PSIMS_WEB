@@ -153,12 +153,11 @@ app.get('/dashboard/activities', isAuthenticated, async (req, res) => {
         if (!scholar) {
             return res.redirect('/login');
         }
-
-        // Fetch all activity programs, sorted by most recent
-        const programs = await ActivityProgram.find({})
+        // Fetch only the current scholar's activity programs, sorted by most recent
+        const programs = await ActivityProgram.find({ scholar: req.session.scholarId })
                                              .sort({ createdAt: -1 })
+                                             .populate('scholar', 'FirstName LastName') // Populate name for display
                                              .lean();
-
         // Render the activities page using the layout helper
         await renderWithLayout(res, 'activities',
             {
@@ -167,10 +166,9 @@ app.get('/dashboard/activities', isAuthenticated, async (req, res) => {
             },
             {
                 page: 'activities',
-                pageTitle: 'Activities & Programs',
+                pageTitle: 'My Activities & Programs',
                 pageCss: 'activities.css'
             });
-
     } catch (err) {
         console.error('Error fetching activities:', err);
         res.redirect('/dashboard/profile');
