@@ -22,6 +22,11 @@ const activityProgramSchema = new mongoose.Schema({
         type: Date,
         required: [true, 'End Date is required.']
     },
+    scholar: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Scholar',
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
