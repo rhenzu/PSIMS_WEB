@@ -182,12 +182,10 @@ app.post('/dashboard/activities', isAuthenticated, upload.single('image'), async
         if (!scholar) {
             return res.redirect('/login');
         }
-
         // Validate required fields
         if (!title || !startDate || !endDate) {
             return res.redirect('/dashboard/activities'); // Could add flash message for error
         }
-
         // Prepare image data if uploaded
         let imageBase64 = null;
         let imageMimeType = null;
@@ -195,19 +193,17 @@ app.post('/dashboard/activities', isAuthenticated, upload.single('image'), async
             imageBase64 = req.file.buffer.toString('base64');
             imageMimeType = req.file.mimetype;
         }
-
-        // Create new activity program
+        // Create new activity program, associating with the current scholar
         const newProgram = new ActivityProgram({
             title: title.trim(),
             description: description ? description.trim() : '',
             imageBase64,
             imageMimeType,
             startDate: new Date(startDate),
-            endDate: new Date(endDate)
+            endDate: new Date(endDate),
+            scholar: req.session.scholarId // Associate with the authenticated scholar
         });
-
         await newProgram.save();
-
         // Redirect back to activities page
         res.redirect('/dashboard/activities');
     } catch (err) {
