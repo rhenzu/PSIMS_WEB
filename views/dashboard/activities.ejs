@@ -1,5 +1,5 @@
-<h1 class="page-title">Activities & Programs</h1>
-<p class="page-description">Check out the latest activities and programs available. You can also add your own below!</p>
+<h1 class="page-title">My Activities & Programs</h1>
+<p class="page-description">Check out the activities and programs you've uploaded. Add more below!</p>
 
 <!-- Add New Activity Form -->
 <div class="add-activity-form">
@@ -9,27 +9,27 @@
             <label for="title">Title *</label>
             <input type="text" id="title" name="title" required placeholder="Enter activity title">
         </div>
-        
+       
         <div class="form-group">
             <label for="description">Description</label>
             <textarea id="description" name="description" rows="3" placeholder="Enter description (optional)"></textarea>
         </div>
-        
+       
         <div class="form-group">
             <label for="startDate">Start Date *</label>
             <input type="date" id="startDate" name="startDate" required>
         </div>
-        
+       
         <div class="form-group">
             <label for="endDate">End Date *</label>
             <input type="date" id="endDate" name="endDate" required>
         </div>
-        
+       
         <div class="form-group">
             <label for="image">Upload Image (optional)</label>
             <input type="file" id="image" name="image" accept="image/*">
         </div>
-        
+       
         <button type="submit" class="add-activity-btn">Add Activity</button>
     </form>
 </div>
@@ -41,8 +41,8 @@
                 <!-- Image Section -->
                 <% if (program.imageBase64 && program.imageMimeType) { %>
                     <div class="activity-card-image-wrapper">
-                        <img src="data:<%= program.imageMimeType %>;base64,<%= program.imageBase64 %>" 
-                             alt="<%= program.title %>" 
+                        <img src="data:<%= program.imageMimeType %>;base64,<%= program.imageBase64 %>"
+                             alt="<%= program.title %>"
                              class="activity-card-image">
                     </div>
                 <% } else { %>
@@ -50,32 +50,34 @@
                         <span>No Image Available</span>
                     </div>
                 <% } %>
-
                 <!-- Content Section -->
                 <div class="activity-card-content">
                     <h3 class="activity-card-title"><%= program.title %></h3>
-                    
+                   
                     <% if (program.description) { %>
                         <p class="activity-card-description"><%= program.description %></p>
                     <% } %>
-
                     <div class="activity-card-dates">
                         <p class="activity-card-date">
-                            <span class="date-label">Posted:</span> 
+                            <span class="date-label">Posted:</span>
                             <%= new Date(program.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
                         </p>
                         <% if (program.startDate && program.endDate) { %>
                             <p class="activity-card-date">
-                                <span class="date-label">Dates:</span> 
-                                <%= new Date(program.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> - 
+                                <span class="date-label">Dates:</span>
+                                <%= new Date(program.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> -
                                 <%= new Date(program.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
                             </p>
                         <% } %>
+                        <!-- Display the scholar's name -->
+                        <p class="activity-card-author">
+                            <span class="date-label">By:</span> <%= program.scholar.FirstName %> <%= program.scholar.LastName %>
+                        </p>
                     </div>
                 </div>
             </div>
         <% }) %>
     <% } else { %>
-        <p class="no-activities-message">No activity programs available at this time.</p>
+        <p class="no-activities-message">No activities uploaded yet. Add your first one above!</p>
     <% } %>
 </div>
